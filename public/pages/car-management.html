@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汽车管理 - 汽车销售管理系统</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 页眉 -->
+    <div class="header">
+      <h1>🚗 汽车管理</h1>
+      <p>汽车信息的增删改查管理</p>
+      <div class="nav">
+        <a href="../index.html">首页</a>
+        <a href="car-management.html">汽车管理</a>
+        <a href="order-management.html">订单管理</a>
+      </div>
+    </div>
+
+    <!-- 添加汽车表单 -->
+    <div class="card">
+      <div class="card-header">添加新汽车</div>
+      <form id="carForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>品牌 *</label>
+            <input type="text" id="brand" required placeholder="如：奔驰">
+          </div>
+          <div class="form-group">
+            <label>型号 *</label>
+            <input type="text" id="model" required placeholder="如：E300L">
+          </div>
+          <div class="form-group">
+            <label>年份 *</label>
+            <input type="number" id="year" required min="1900" max="2100" value="2024">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>价格 (元) *</label>
+            <input type="number" id="price" required min="0" step="1000" placeholder="如：520000">
+          </div>
+          <div class="form-group">
+            <label>颜色 *</label>
+            <input type="text" id="color" required placeholder="如：曜岩黑">
+          </div>
+          <div class="form-group">
+            <label>库存 *</label>
+            <input type="number" id="stock" required min="0" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>描述</label>
+          <textarea id="description" rows="3" placeholder="车辆描述信息（可选）"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">添加汽车</button>
+        <button type="button" class="btn btn-warning" id="cancelEdit" style="display: none;">取消编辑</button>
+      </form>
+    </div>
+
+    <!-- 汽车列表 -->
+    <div class="card">
+      <div class="card-header">汽车列表</div>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+      </div>
+      <div id="carListContainer" style="display: none;">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>品牌</th>
+                <th>型号</th>
+                <th>年份</th>
+                <th>价格</th>
+                <th>颜色</th>
+                <th>库存</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="carList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/car.js"></script>
+</body>
+</html>
+
