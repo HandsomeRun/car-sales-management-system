@@ -4,7 +4,7 @@
  * @date 2025-10-18
  */
 
-import { Order, CreateOrderDTO, UpdateOrderDTO } from '../types/Order';
+import { Order, CreateOrderDTO } from '../types/Order';
 import { OrderDAO } from '../dao/OrderDAO';
 import { CarService } from './CarService';
 import { Validator } from '../utils/validator';

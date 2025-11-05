@@ -4,9 +4,6 @@
  * @date 2025-10-17
  */
 
-import { CreateCarDTO, UpdateCarDTO } from '../types/Car';
-import { CreateOrderDTO } from '../types/Order';
-
 export class Validator {
   /**
    * 验证汽车创建数据

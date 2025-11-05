@@ -4,7 +4,7 @@
  * @date 2025-10-17
  */
 
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage } from 'http';
 import { Router } from './index';
 import { CarService } from '../service/CarService';
 import { ResponseUtil } from '../utils/response';
@@ -17,7 +17,7 @@ export function registerCarRoutes(router: Router): void {
    * 获取所有汽车
    * GET /api/cars
    */
-  router.get('/api/cars', async (req, res) => {
+  router.get('/api/cars', async (_req, res) => {
     try {
       const cars = await carService.getAllCars();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -32,7 +32,7 @@ export function registerCarRoutes(router: Router): void {
    * 根据 ID 获取汽车
    * GET /api/cars/:id
    */
-  router.get('/api/cars/:id', async (req, res, params) => {
+  router.get('/api/cars/:id', async (_req, res, params) => {
     try {
       const car = await carService.getCarById(params!.id);
       if (!car) {
@@ -101,7 +101,7 @@ export function registerCarRoutes(router: Router): void {
    * 删除汽车
    * DELETE /api/cars/:id
    */
-  router.delete('/api/cars/:id', async (req, res, params) => {
+  router.delete('/api/cars/:id', async (_req, res, params) => {
     try {
       const result = await carService.deleteCar(params!.id);
       if (!result.success) {

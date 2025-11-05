@@ -4,7 +4,7 @@
  * @date 2025-10-18
  */
 
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage } from 'http';
 import { Router } from './index';
 import { OrderService } from '../service/OrderService';
 import { ResponseUtil } from '../utils/response';
@@ -17,7 +17,7 @@ export function registerOrderRoutes(router: Router): void {
    * 获取所有订单
    * GET /api/orders
    */
-  router.get('/api/orders', async (req, res) => {
+  router.get('/api/orders', async (_req, res) => {
     try {
       const orders = await orderService.getAllOrders();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -32,7 +32,7 @@ export function registerOrderRoutes(router: Router): void {
    * 根据 ID 获取订单
    * GET /api/orders/:id
    */
-  router.get('/api/orders/:id', async (req, res, params) => {
+  router.get('/api/orders/:id', async (_req, res, params) => {
     try {
       const order = await orderService.getOrderById(params!.id);
       if (!order) {
@@ -101,7 +101,7 @@ export function registerOrderRoutes(router: Router): void {
    * 删除订单
    * DELETE /api/orders/:id
    */
-  router.delete('/api/orders/:id', async (req, res, params) => {
+  router.delete('/api/orders/:id', async (_req, res, params) => {
     try {
       const result = await orderService.deleteOrder(params!.id);
       if (!result.success) {
