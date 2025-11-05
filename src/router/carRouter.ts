@@ -1,27 +1,27 @@
 /**
- * 订单管理路由
+ * 汽车管理路由
  * @author 柳如烟 (后端开发 Lead)
- * @date 2025-10-18
+ * @date 2025-10-17
  */
 
 import { IncomingMessage, ServerResponse } from 'http';
 import { Router } from './index';
-import { OrderService } from '../service/OrderService';
+import { CarService } from '../service/CarService';
 import { ResponseUtil } from '../utils/response';
-import { CreateOrderDTO } from '../types/Order';
+import { CreateCarDTO, UpdateCarDTO } from '../types/Car';
 
-const orderService = new OrderService();
+const carService = new CarService();
 
-export function registerOrderRoutes(router: Router): void {
+export function registerCarRoutes(router: Router): void {
   /**
-   * 获取所有订单
-   * GET /api/orders
+   * 获取所有汽车
+   * GET /api/cars
    */
-  router.get('/api/orders', async (req, res) => {
+  router.get('/api/cars', async (req, res) => {
     try {
-      const orders = await orderService.getAllOrders();
+      const cars = await carService.getAllCars();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify(ResponseUtil.success(orders)));
+      res.end(JSON.stringify(ResponseUtil.success(cars)));
     } catch (error: any) {
       res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(ResponseUtil.internalError(error.message)));
@@ -29,19 +29,19 @@ export function registerOrderRoutes(router: Router): void {
   });
 
   /**
-   * 根据 ID 获取订单
-   * GET /api/orders/:id
+   * 根据 ID 获取汽车
+   * GET /api/cars/:id
    */
-  router.get('/api/orders/:id', async (req, res, params) => {
+  router.get('/api/cars/:id', async (req, res, params) => {
     try {
-      const order = await orderService.getOrderById(params!.id);
-      if (!order) {
+      const car = await carService.getCarById(params!.id);
+      if (!car) {
         res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify(ResponseUtil.notFound('Order')));
+        res.end(JSON.stringify(ResponseUtil.notFound('Car')));
         return;
       }
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify(ResponseUtil.success(order)));
+      res.end(JSON.stringify(ResponseUtil.success(car)));
     } catch (error: any) {
       res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify(ResponseUtil.internalError(error.message)));
@@ -49,15 +49,15 @@ export function registerOrderRoutes(router: Router): void {
   });
 
   /**
-   * 创建订单
-   * POST /api/orders
+   * 创建汽车
+   * POST /api/cars
    */
-  router.post('/api/orders', async (req, res) => {
+  router.post('/api/cars', async (req, res) => {
     try {
       const body = await parseBody(req);
-      const dto: CreateOrderDTO = JSON.parse(body);
+      const dto: CreateCarDTO = JSON.parse(body);
 
-      const result = await orderService.createOrder(dto);
+      const result = await carService.createCar(dto);
       if (!result.success) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(ResponseUtil.badRequest(result.error || 'Invalid data')));
@@ -73,17 +73,17 @@ export function registerOrderRoutes(router: Router): void {
   });
 
   /**
-   * 更新订单状态
-   * PUT /api/orders/:id/status
+   * 更新汽车
+   * PUT /api/cars/:id
    */
-  router.put('/api/orders/:id/status', async (req, res, params) => {
+  router.put('/api/cars/:id', async (req, res, params) => {
     try {
       const body = await parseBody(req);
-      const { status } = JSON.parse(body);
+      const dto: UpdateCarDTO = JSON.parse(body);
 
-      const result = await orderService.updateOrderStatus(params!.id, status);
+      const result = await carService.updateCar(params!.id, dto);
       if (!result.success) {
-        const statusCode = result.error === '订单不存在' ? 404 : 400;
+        const statusCode = result.error === '汽车不存在' ? 404 : 400;
         res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(ResponseUtil.badRequest(result.error || 'Update failed')));
         return;
@@ -98,15 +98,15 @@ export function registerOrderRoutes(router: Router): void {
   });
 
   /**
-   * 删除订单
-   * DELETE /api/orders/:id
+   * 删除汽车
+   * DELETE /api/cars/:id
    */
-  router.delete('/api/orders/:id', async (req, res, params) => {
+  router.delete('/api/cars/:id', async (req, res, params) => {
     try {
-      const result = await orderService.deleteOrder(params!.id);
+      const result = await carService.deleteCar(params!.id);
       if (!result.success) {
         res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify(ResponseUtil.notFound('Order')));
+        res.end(JSON.stringify(ResponseUtil.notFound('Car')));
         return;
       }
 

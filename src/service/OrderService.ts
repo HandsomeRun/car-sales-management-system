@@ -18,37 +18,57 @@ export class OrderService {
     this.carService = new CarService();
   }
 
+  /**
+   * 获取所有订单
+   */
   public async getAllOrders(): Promise<Order[]> {
     return this.orderDAO.findAll();
   }
 
+  /**
+   * 根据 ID 获取订单
+   */
   public async getOrderById(id: string): Promise<Order | null> {
     return this.orderDAO.findById(id);
   }
 
+  /**
+   * 根据状态查询订单
+   */
   public async getOrdersByStatus(status: string): Promise<Order[]> {
     return this.orderDAO.findByStatus(status);
   }
 
+  /**
+   * 创建订单
+   */
   public async createOrder(dto: CreateOrderDTO): Promise<{ success: boolean; data?: Order; error?: string }> {
+    // 数据验证
     const validation = Validator.validateCreateOrder(dto);
     if (!validation.valid) {
       return { success: false, error: validation.errors.join(', ') };
     }
 
+    // 检查汽车是否存在
     const car = await this.carService.getCarById(dto.carId);
     if (!car) {
       return { success: false, error: '汽车不存在' };
     }
 
+    // 检查库存
     const hasStock = await this.carService.checkStock(dto.carId, dto.quantity);
     if (!hasStock) {
       return { success: false, error: '库存不足或汽车不可用' };
     }
 
     try {
+      // 计算总价
       const totalPrice = car.price * dto.quantity;
+
+      // 创建订单
       const order = this.orderDAO.create(dto, totalPrice);
+
+      // 减少库存
       await this.carService.decreaseStock(dto.carId, dto.quantity);
 
       return { success: true, data: order };
@@ -57,12 +77,17 @@ export class OrderService {
     }
   }
 
+  /**
+   * 更新订单状态
+   */
   public async updateOrderStatus(id: string, status: string): Promise<{ success: boolean; data?: Order; error?: string }> {
+    // 验证状态
     if (!['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
       return { success: false, error: '无效的订单状态' };
     }
 
     try {
+      // 如果取消订单，需要恢复库存
       if (status === 'cancelled') {
         const order = this.orderDAO.findById(id);
         if (order && order.status !== 'cancelled') {
@@ -81,8 +106,12 @@ export class OrderService {
     }
   }
 
+  /**
+   * 删除订单
+   */
   public async deleteOrder(id: string): Promise<{ success: boolean; error?: string }> {
     try {
+      // 删除前恢复库存（如果订单未取消）
       const order = this.orderDAO.findById(id);
       if (order && order.status !== 'cancelled' && order.status !== 'completed') {
         await this.carService.increaseStock(order.carId, order.quantity);
