@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 
 export class OrderDAO {
   private db: MemoryDB;
-  private orderIndex: Map<string, number>;
+  private orderIndex: Map<string, number>; // ID -> 数组索引的映射
 
   constructor() {
     this.db = MemoryDB.getInstance();
@@ -18,6 +18,9 @@ export class OrderDAO {
     this.rebuildIndex();
   }
 
+  /**
+   * 重建索引
+   */
   private rebuildIndex(): void {
     const orders = this.db.getOrders();
     this.orderIndex.clear();
@@ -26,24 +29,39 @@ export class OrderDAO {
     });
   }
 
+  /**
+   * 查询所有订单
+   */
   public findAll(): Order[] {
     return this.db.getOrders();
   }
 
+  /**
+   * 根据 ID 查询订单
+   */
   public findById(id: string): Order | null {
     const index = this.orderIndex.get(id);
     if (index === undefined) return null;
     return this.db.getOrders()[index] || null;
   }
 
+  /**
+   * 根据汽车 ID 查询订单
+   */
   public findByCarId(carId: string): Order[] {
     return this.db.getOrders().filter(order => order.carId === carId);
   }
 
+  /**
+   * 根据状态查询订单
+   */
   public findByStatus(status: string): Order[] {
     return this.db.getOrders().filter(order => order.status === status);
   }
 
+  /**
+   * 创建订单
+   */
   public create(dto: CreateOrderDTO, totalPrice: number): Order {
     const newOrder: Order = {
       id: randomUUID(),
@@ -61,6 +79,9 @@ export class OrderDAO {
     return newOrder;
   }
 
+  /**
+   * 更新订单
+   */
   public update(id: string, dto: UpdateOrderDTO): Order | null {
     const index = this.orderIndex.get(id);
     if (index === undefined) return null;
@@ -79,6 +100,9 @@ export class OrderDAO {
     return updatedOrder;
   }
 
+  /**
+   * 删除订单
+   */
   public delete(id: string): boolean {
     const index = this.orderIndex.get(id);
     if (index === undefined) return false;

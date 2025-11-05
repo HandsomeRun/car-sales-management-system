@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 
 export class CarDAO {
   private db: MemoryDB;
-  private carIndex: Map<string, number>;
+  private carIndex: Map<string, number>; // ID -> 数组索引的映射
 
   constructor() {
     this.db = MemoryDB.getInstance();
@@ -18,6 +18,9 @@ export class CarDAO {
     this.rebuildIndex();
   }
 
+  /**
+   * 重建索引
+   */
   private rebuildIndex(): void {
     const cars = this.db.getCars();
     this.carIndex.clear();
@@ -26,16 +29,25 @@ export class CarDAO {
     });
   }
 
+  /**
+   * 查询所有汽车
+   */
   public findAll(): Car[] {
     return this.db.getCars();
   }
 
+  /**
+   * 根据 ID 查询汽车（O(1) 查询）
+   */
   public findById(id: string): Car | null {
     const index = this.carIndex.get(id);
     if (index === undefined) return null;
     return this.db.getCars()[index] || null;
   }
 
+  /**
+   * 根据条件查询
+   */
   public findByCondition(condition: Partial<Car>): Car[] {
     const cars = this.db.getCars();
     return cars.filter(car => {
@@ -46,6 +58,9 @@ export class CarDAO {
     });
   }
 
+  /**
+   * 创建汽车
+   */
   public create(dto: CreateCarDTO): Car {
     const newCar: Car = {
       id: randomUUID(),
@@ -61,6 +76,9 @@ export class CarDAO {
     return newCar;
   }
 
+  /**
+   * 更新汽车
+   */
   public update(id: string, dto: UpdateCarDTO): Car | null {
     const index = this.carIndex.get(id);
     if (index === undefined) return null;
@@ -79,16 +97,22 @@ export class CarDAO {
     return updatedCar;
   }
 
+  /**
+   * 删除汽车
+   */
   public delete(id: string): boolean {
     const index = this.carIndex.get(id);
     if (index === undefined) return false;
 
     this.db.deleteCar(index);
-    this.rebuildIndex();
+    this.rebuildIndex(); // 重建索引
 
     return true;
   }
 
+  /**
+   * 减少库存
+   */
   public decreaseStock(id: string, quantity: number): boolean {
     const index = this.carIndex.get(id);
     if (index === undefined) return false;
@@ -108,6 +132,9 @@ export class CarDAO {
     return true;
   }
 
+  /**
+   * 增加库存
+   */
   public increaseStock(id: string, quantity: number): boolean {
     const index = this.carIndex.get(id);
     if (index === undefined) return false;
@@ -127,3 +154,4 @@ export class CarDAO {
     return true;
   }
 }
+

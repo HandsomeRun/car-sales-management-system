@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理 - 汽车销售管理系统</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 页眉 -->
+    <div class="header">
+      <h1>📋 订单管理</h1>
+      <p>销售订单的创建和管理</p>
+      <div class="nav">
+        <a href="../index.html">首页</a>
+        <a href="car-management.html">汽车管理</a>
+        <a href="order-management.html">订单管理</a>
+      </div>
+    </div>
+
+    <!-- 创建订单表单 -->
+    <div class="card">
+      <div class="card-header">创建新订单</div>
+      <form id="orderForm">
+        <div class="form-group">
+          <label>选择汽车 *</label>
+          <select id="carId" required>
+            <option value="">请选择汽车...</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>客户姓名 *</label>
+            <input type="text" id="customerName" required placeholder="请输入客户姓名">
+          </div>
+          <div class="form-group">
+            <label>客户电话 *</label>
+            <input type="tel" id="customerPhone" required pattern="1[3-9]\d{9}" placeholder="如：13800138000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>客户邮箱 *</label>
+            <input type="email" id="customerEmail" required placeholder="如：customer@example.com">
+          </div>
+          <div class="form-group">
+            <label>购买数量 *</label>
+            <input type="number" id="quantity" required min="1" value="1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>备注</label>
+          <textarea id="notes" rows="3" placeholder="订单备注信息（可选）"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">创建订单</button>
+      </form>
+    </div>
+
+    <!-- 订单列表 -->
+    <div class="card">
+      <div class="card-header">订单列表</div>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+      </div>
+      <div id="orderListContainer" style="display: none;">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>订单号</th>
+                <th>客户</th>
+                <th>电话</th>
+                <th>汽车</th>
+                <th>数量</th>
+                <th>总价</th>
+                <th>状态</th>
+                <th>订单日期</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="orderList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/order.js"></script>
+</body>
+</html>
+
