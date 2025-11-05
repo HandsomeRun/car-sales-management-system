@@ -6,6 +6,9 @@
 
 let availableCars = [];
 
+/**
+ * 加载可售汽车列表
+ */
 async function loadAvailableCars() {
   try {
     const cars = await CarAPI.getAll();
@@ -23,6 +26,9 @@ async function loadAvailableCars() {
   }
 }
 
+/**
+ * 加载订单列表
+ */
 async function loadOrders() {
   const loading = document.getElementById('loading');
   const container = document.getElementById('orderListContainer');
@@ -37,6 +43,7 @@ async function loadOrders() {
       CarAPI.getAll()
     ]);
 
+    // 创建汽车ID到汽车信息的映射
     const carMap = new Map(cars.map(car => [car.id, car]));
     
     if (orders.length === 0) {
@@ -74,6 +81,9 @@ async function loadOrders() {
   }
 }
 
+/**
+ * 获取状态徽章
+ */
 function getStatusBadge(status) {
   const badges = {
     pending: '<span class="badge badge-warning">待处理</span>',
@@ -84,6 +94,9 @@ function getStatusBadge(status) {
   return badges[status] || status;
 }
 
+/**
+ * 获取状态操作按钮
+ */
 function getStatusActions(order) {
   if (order.status === 'pending') {
     return `<button class="btn btn-sm btn-success" onclick="updateStatus('${order.id}', 'confirmed')">确认</button>
@@ -94,11 +107,17 @@ function getStatusActions(order) {
   return '';
 }
 
+/**
+ * 格式化日期
+ */
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString('zh-CN');
 }
 
+/**
+ * 创建订单
+ */
 document.getElementById('orderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -116,12 +135,15 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
     alert('订单创建成功！');
     document.getElementById('orderForm').reset();
     loadOrders();
-    loadAvailableCars();
+    loadAvailableCars(); // 重新加载可售汽车（库存可能变化）
   } catch (error) {
     alert('创建失败：' + error.message);
   }
 });
 
+/**
+ * 更新订单状态
+ */
 async function updateStatus(id, status) {
   const confirmMessages = {
     confirmed: '确认此订单',
@@ -137,12 +159,15 @@ async function updateStatus(id, status) {
     await OrderAPI.updateStatus(id, status);
     alert('状态更新成功！');
     loadOrders();
-    loadAvailableCars();
+    loadAvailableCars(); // 状态变更可能影响库存
   } catch (error) {
     alert('更新失败：' + error.message);
   }
 }
 
+/**
+ * 删除订单
+ */
 async function deleteOrder(id, displayId) {
   if (!confirm(`确定要删除订单 ${displayId}... 吗？`)) {
     return;
@@ -158,6 +183,7 @@ async function deleteOrder(id, displayId) {
   }
 }
 
+// 页面加载时获取数据
 window.addEventListener('DOMContentLoaded', () => {
   loadAvailableCars();
   loadOrders();

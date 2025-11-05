@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汽车销售管理系统</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 页眉 -->
+    <div class="header">
+      <h1>🚗 汽车销售管理系统</h1>
+      <p>基于 Node.js 原生 HTTP 模块 + TypeScript 零框架实现</p>
+      <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="pages/car-management.html">汽车管理</a>
+        <a href="pages/order-management.html">订单管理</a>
+      </div>
+    </div>
+
+    <!-- 统计面板 -->
+    <div id="statsLoading" class="loading">
+      <div class="spinner"></div>
+      <p>加载统计数据...</p>
+    </div>
+
+    <div id="statsContainer" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>总车辆数</h3>
+          <div class="value" id="totalCars">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>可售车辆</h3>
+          <div class="value" id="availableCars">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>总订单数</h3>
+          <div class="value" id="totalOrders">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>待处理订单</h3>
+          <div class="value" id="pendingOrders">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 系统介绍 -->
+    <div class="card">
+      <div class="card-header">系统介绍</div>
+      <p style="line-height: 1.8; color: #666;">
+        这是一个基于<strong>零框架</strong>理念开发的汽车销售管理信息系统，采用 Node.js 原生 HTTP 模块和 TypeScript 构建。
+        系统支持汽车信息管理、销售订单管理等核心功能，并实现了<strong>10,000+ 并发用户</strong>的设计目标。
+      </p>
+    </div>
+
+    <!-- 技术特点 -->
+    <div class="card">
+      <div class="card-header">技术特点</div>
+      <ul style="line-height: 2; color: #666;">
+        <li>✅ <strong>零框架实现</strong> - 使用 Node.js 原生 HTTP 模块，不依赖 Express/Fastify</li>
+        <li>✅ <strong>TypeScript 开发</strong> - 类型安全，提升代码质量</li>
+        <li>✅ <strong>滑动时间窗口限流</strong> - 支持 1000 req/s/IP，防止恶意攻击</li>
+        <li>✅ <strong>内存数组模拟</strong> - 简化实现，聚焦项目管理流程展示</li>
+        <li>✅ <strong>分层架构设计</strong> - Router → Service → DAO 清晰分离</li>
+        <li>✅ <strong>RESTful API</strong> - 标准化的 API 设计</li>
+        <li>✅ <strong>响应式前端</strong> - 原生 HTML + CSS + ES6，支持移动端</li>
+      </ul>
+    </div>
+
+    <!-- 团队成员 -->
+    <div class="card">
+      <div class="card-header">开发团队</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>常润</strong><br>
+          <span style="color: #666; font-size: 14px;">项目经理 / 架构师</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>柳如烟</strong><br>
+          <span style="color: #666; font-size: 14px;">后端开发 Lead</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>白凝冰</strong><br>
+          <span style="color: #666; font-size: 14px;">后端开发</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>季博达</strong><br>
+          <span style="color: #666; font-size: 14px;">后端开发 / 并发控制</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>秦彻</strong><br>
+          <span style="color: #666; font-size: 14px;">前端开发 Lead</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>虾仁</strong><br>
+          <span style="color: #666; font-size: 14px;">前端开发</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>张起灵</strong><br>
+          <span style="color: #666; font-size: 14px;">测试工程师</span>
+        </div>
+        <div style="padding: 12px; background: #f9fafb; border-radius: 8px;">
+          <strong>吴邪</strong><br>
+          <span style="color: #666; font-size: 14px;">DevOps 工程师</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center" style="color: #999; margin-top: 40px;">
+      © 2025 汽车销售管理系统 | 软件项目管理课程设计
+    </p>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
+
