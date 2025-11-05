@@ -1,0 +1,131 @@
+/**
+ * 订单业务逻辑层
+ * @author 白凝冰 (后端开发)
+ * @date 2025-10-18
+ */
+
+import { Order, CreateOrderDTO, UpdateOrderDTO } from '../types/Order';
+import { OrderDAO } from '../dao/OrderDAO';
+import { CarService } from './CarService';
+import { Validator } from '../utils/validator';
+
+export class OrderService {
+  private orderDAO: OrderDAO;
+  private carService: CarService;
+
+  constructor() {
+    this.orderDAO = new OrderDAO();
+    this.carService = new CarService();
+  }
+
+  /**
+   * 获取所有订单
+   */
+  public async getAllOrders(): Promise<Order[]> {
+    return this.orderDAO.findAll();
+  }
+
+  /**
+   * 根据 ID 获取订单
+   */
+  public async getOrderById(id: string): Promise<Order | null> {
+    return this.orderDAO.findById(id);
+  }
+
+  /**
+   * 根据状态查询订单
+   */
+  public async getOrdersByStatus(status: string): Promise<Order[]> {
+    return this.orderDAO.findByStatus(status);
+  }
+
+  /**
+   * 创建订单
+   */
+  public async createOrder(dto: CreateOrderDTO): Promise<{ success: boolean; data?: Order; error?: string }> {
+    // 数据验证
+    const validation = Validator.validateCreateOrder(dto);
+    if (!validation.valid) {
+      return { success: false, error: validation.errors.join(', ') };
+    }
+
+    // 检查汽车是否存在
+    const car = await this.carService.getCarById(dto.carId);
+    if (!car) {
+      return { success: false, error: '汽车不存在' };
+    }
+
+    // 检查库存
+    const hasStock = await this.carService.checkStock(dto.carId, dto.quantity);
+    if (!hasStock) {
+      return { success: false, error: '库存不足或汽车不可用' };
+    }
+
+    try {
+      // 计算总价
+      const totalPrice = car.price * dto.quantity;
+
+      // 创建订单
+      const order = this.orderDAO.create(dto, totalPrice);
+
+      // 减少库存
+      await this.carService.decreaseStock(dto.carId, dto.quantity);
+
+      return { success: true, data: order };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * 更新订单状态
+   */
+  public async updateOrderStatus(id: string, status: string): Promise<{ success: boolean; data?: Order; error?: string }> {
+    // 验证状态
+    if (!['pending', 'confirmed', 'cancelled', 'completed'].includes(status)) {
+      return { success: false, error: '无效的订单状态' };
+    }
+
+    try {
+      // 如果取消订单，需要恢复库存
+      if (status === 'cancelled') {
+        const order = this.orderDAO.findById(id);
+        if (order && order.status !== 'cancelled') {
+          await this.carService.increaseStock(order.carId, order.quantity);
+        }
+      }
+
+      const order = this.orderDAO.update(id, { status: status as any });
+      if (!order) {
+        return { success: false, error: '订单不存在' };
+      }
+
+      return { success: true, data: order };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * 删除订单
+   */
+  public async deleteOrder(id: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // 删除前恢复库存（如果订单未取消）
+      const order = this.orderDAO.findById(id);
+      if (order && order.status !== 'cancelled' && order.status !== 'completed') {
+        await this.carService.increaseStock(order.carId, order.quantity);
+      }
+
+      const result = this.orderDAO.delete(id);
+      if (!result) {
+        return { success: false, error: '订单不存在' };
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+}
+
