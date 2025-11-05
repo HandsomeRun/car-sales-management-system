@@ -1,0 +1,30 @@
+{
+  "name": "car-sales-management-system",
+  "version": "1.0.0",
+  "description": "汽车销售管理信息系统 - 基于 Node.js 原生 HTTP 模块 + TypeScript 零框架实现",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "test": "node --test tests/unit/*.test.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "car-sales",
+    "management-system",
+    "typescript",
+    "nodejs",
+    "http"
+  ],
+  "author": "常润团队",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}
+
